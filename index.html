@@ -4,68 +4,116 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WhatsApp TO Delivery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        :root {
+            --primary: #25D366;
+            --primary-dark: #128C7E;
+            --secondary: #2d3748;
+            --light: #f8f9fa;
+            --dark: #1a202c;
+            --gray: #718096;
+            --light-gray: #e2e8f0;
+            --success: #38a169;
+            --danger: #e53e3e;
         }
         
         body {
-            background-color: #f5f5f5;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             margin: 0;
             padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            color: var(--dark);
         }
         
         .container {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             width: 100%;
-            max-width: 600px;
-            padding: 30px;
+            max-width: 650px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--light-gray);
         }
         
         h1 {
-            color: #25D366;
+            color: var(--primary);
             text-align: center;
             margin-bottom: 30px;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 2.2rem;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 2px;
         }
         
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            position: relative;
         }
         
         label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #333;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--secondary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .input-container {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
         }
         
         input, select, textarea {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 14px 16px;
+            background: white;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
             font-size: 16px;
-            transition: border-color 0.3s;
+            transition: all 0.3s ease;
+            color: var(--dark);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
         }
         
         input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: #25D366;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.15);
         }
         
         .error {
-            color: #ff3860;
+            color: var(--danger);
             font-size: 14px;
-            margin-top: 5px;
+            margin-top: 8px;
             display: none;
+            font-weight: 500;
         }
         
         .popup {
@@ -82,126 +130,252 @@
         }
         
         .popup-content {
-            background-color: white;
+            background: white;
             padding: 30px;
-            border-radius: 10px;
+            border-radius: 12px;
             width: 90%;
-            max-width: 500px;
+            max-width: 550px;
             max-height: 80vh;
             overflow-y: auto;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--light-gray);
+            position: relative;
         }
         
         .popup-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--light-gray);
         }
         
         .popup-title {
-            font-size: 20px;
+            font-size: 1.5rem;
             font-weight: 600;
-            color: #333;
+            color: var(--primary);
             margin: 0;
         }
         
         .close-btn {
-            background: none;
+            background: rgba(0, 0, 0, 0.05);
             border: none;
-            font-size: 24px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 18px;
             cursor: pointer;
-            color: #777;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+            color: var(--dark);
         }
         
         .btn {
-            background-color: #25D366;
+            background: var(--primary);
             color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
+            padding: 14px 25px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
-            font-weight: 500;
+            font-weight: 600;
             width: 100%;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(37, 211, 102, 0.2);
+            position: relative;
+            overflow: hidden;
         }
         
         .btn:hover {
-            background-color: #128C7E;
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(37, 211, 102, 0.25);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
         }
         
         .btn:disabled {
-            background-color: #ccc;
+            background: var(--gray);
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
         
         .success-message {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 12px;
-            border-radius: 5px;
-            margin-top: 20px;
+            background: rgba(56, 161, 105, 0.1);
+            color: var(--success);
+            padding: 14px;
+            border-radius: 8px;
+            margin-top: 25px;
             display: none;
+            border-left: 4px solid var(--success);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
         
         .sub-options {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 20px;
         }
         
-        @media (max-width: 600px) {
-            .sub-options {
-                grid-template-columns: 1fr;
+        .icon {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            color: var(--gray);
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
             }
             
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .sub-options {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .popup-content {
+                padding: 20px;
+            }
+            
+            body {
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
             .container {
                 padding: 20px;
             }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            input, select, textarea {
+                padding: 12px 14px;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+            }
+            
+            body {
+                padding: 10px;
+            }
+        }
+        
+        /* Fix for dropdown background */
+        select {
+            background-color: white;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+        
+        /* Ensure dropdown options have white background */
+        select option {
+            background: white;
+            color: var(--dark);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>WhatsApp TO Delivery</h1>
+        <div class="form-header">
+            <div class="logo">
+                <i class="fab fa-whatsapp"></i>
+            </div>
+            <h1>WhatsApp TO Delivery</h1>
+            <p class="tagline">Streamlined customer communication management</p>
+        </div>
+        
         <form id="whatsappForm">
             <div class="form-group">
-                <label for="customerName">Customer Name</label>
-                <input type="text" id="customerName" name="customerName" required>
+                <label for="customerName"><i class="fas fa-user icon"></i>Customer Name</label>
+                <div class="input-container">
+                    <input type="text" id="customerName" name="customerName" required>
+                </div>
             </div>
             
             <div class="form-group">
-                <label for="customerPhone">Customer Phone Number</label>
-                <input type="text" id="customerPhone" name="customerPhone" pattern="^91[6-9]\d{9}$" required>
-                <div class="error" id="phoneError">Please Add 91 Before Phone number</div>
+                <label for="customerPhone"><i class="fas fa-phone icon"></i>Customer Phone Number</label>
+                <div class="input-container">
+                    <input type="text" id="customerPhone" name="customerPhone" pattern="^91[6-9]\d{9}$" required placeholder="91XXXXXXXXXX">
+                </div>
+                <div class="error" id="phoneError">Please enter a valid 10-digit phone number starting with 91</div>
             </div>
             
             <div class="form-group">
-                <label for="date">Date</label>
-                <input type="date" id="date" name="date" required>
+                <label for="date"><i class="fas fa-calendar icon"></i>Date</label>
+                <div class="input-container">
+                    <input type="date" id="date" name="date" required>
+                </div>
             </div>
             
             <div class="form-group">
-                <label for="time">Time</label>
-                <input type="time" id="time" name="time" required>
+                <label for="time"><i class="fas fa-clock icon"></i>Time</label>
+                <div class="input-container">
+                    <input type="time" id="time" name="time" required>
+                </div>
             </div>
             
             <div class="form-group">
-                <label for="callReason">Customer Call Reason</label>
-                <select id="callReason" name="callReason" required>
-                    <option value="">Select a reason</option>
-                    <option value="Complaint">Complaint</option>
-                    <option value="Enquiery">Enquiery</option>
-                    <option value="FeedBack">FeedBack</option>
-                    <option value="Marketing Call">Marketing Call</option>
-                </select>
+                <label for="callReason"><i class="fas fa-comment-dots icon"></i>Customer Call Reason</label>
+                <div class="input-container">
+                    <select id="callReason" name="callReason" required>
+                        <option value="">Select a reason</option>
+                        <option value="Complaint">Complaint</option>
+                        <option value="Enquiery">Enquiry</option>
+                        <option value="FeedBack">Feedback</option>
+                        <option value="Marketing Call">Marketing Call</option>
+                    </select>
+                </div>
             </div>
             
-            <button type="submit" class="btn" id="submitBtn">Submit</button>
+            <button type="submit" class="btn" id="submitBtn">
+                <i class="fas fa-paper-plane icon"></i>Submit Form
+            </button>
         </form>
         
         <div class="success-message" id="successMessage">
-            Form submitted successfully!
+            <i class="fas fa-check-circle"></i> Form submitted successfully! Data has been recorded.
         </div>
     </div>
     
@@ -209,44 +383,69 @@
     <div class="popup" id="complaintPopup">
         <div class="popup-content">
             <div class="popup-header">
-                <h3 class="popup-title">Please Describe Your Complaint Here</h3>
+                <h3 class="popup-title"><i class="fas fa-exclamation-triangle icon"></i>Complaint Details</h3>
                 <button class="close-btn" onclick="closePopup('complaintPopup')">&times;</button>
             </div>
-            <textarea id="complaintDetails" rows="6" placeholder="Enter complaint details..."></textarea>
-            <button class="btn" onclick="saveComplaint()" style="margin-top: 15px;">Save</button>
+            <div class="form-group">
+                <label for="complaintDetails">Please describe your complaint</label>
+                <div class="input-container">
+                    <textarea id="complaintDetails" rows="6" placeholder="Enter complaint details..."></textarea>
+                </div>
+            </div>
+            <button class="btn" onclick="saveComplaint()">
+                <i class="fas fa-save icon"></i>Save Complaint
+            </button>
         </div>
     </div>
     
-    <!-- Enquiery Popup -->
+    <!-- Enquiry Popup -->
     <div class="popup" id="enquieryPopup">
         <div class="popup-content">
             <div class="popup-header">
-                <h3 class="popup-title">Enquiery Details</h3>
+                <h3 class="popup-title"><i class="fas fa-question-circle icon"></i>Enquiry Details</h3>
                 <button class="close-btn" onclick="closePopup('enquieryPopup')">&times;</button>
             </div>
             <div class="sub-options">
                 <div class="form-group">
                     <label for="itemsEnquired">Number of Item Enquiries</label>
-                    <input type="text" id="itemsEnquired" name="itemsEnquired">
+                    <div class="input-container">
+                        <input type="number" id="itemsEnquired" name="itemsEnquired" min="0">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="itemsBilled">Number of items billed</label>
-                    <input type="text" id="itemsBilled" name="itemsBilled">
+                    <div class="input-container">
+                        <input type="number" id="itemsBilled" name="itemsBilled" min="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="billValue">Bill Value (₹)</label>
+                    <div class="input-container">
+                        <input type="number" id="billValue" name="billValue" min="0" step="0.01">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="itemsNotAvailable">Number of items Not Available</label>
-                    <input type="text" id="itemsNotAvailable" name="itemsNotAvailable">
+                    <div class="input-container">
+                        <input type="number" id="itemsNotAvailable" name="itemsNotAvailable" min="0">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="itemNames">Items Name</label>
-                    <input type="text" id="itemNames" name="itemNames">
+                    <div class="input-container">
+                        <input type="text" id="itemNames" name="itemNames" placeholder="Separate items with commas">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="quantity">Quantity</label>
-                    <input type="text" id="quantity" name="quantity">
+                    <div class="input-container">
+                        <input type="text" id="quantity" name="quantity" placeholder="e.g., 2kg, 5 units">
+                    </div>
                 </div>
             </div>
-            <button class="btn" onclick="saveEnquiery()" style="margin-top: 15px;">Save</button>
+            <button class="btn" onclick="saveEnquiery()">
+                <i class="fas fa-save icon"></i>Save Enquiry
+            </button>
         </div>
     </div>
     
@@ -254,11 +453,18 @@
     <div class="popup" id="feedbackPopup">
         <div class="popup-content">
             <div class="popup-header">
-                <h3 class="popup-title">FeedBack Details</h3>
+                <h3 class="popup-title"><i class="fas fa-star icon"></i>Feedback Details</h3>
                 <button class="close-btn" onclick="closePopup('feedbackPopup')">&times;</button>
             </div>
-            <textarea id="feedbackDetails" rows="6" placeholder="Enter feedback details..."></textarea>
-            <button class="btn" onclick="saveFeedback()" style="margin-top: 15px;">Save</button>
+            <div class="form-group">
+                <label for="feedbackDetails">Please share your feedback</label>
+                <div class="input-container">
+                    <textarea id="feedbackDetails" rows="6" placeholder="Enter feedback details..."></textarea>
+                </div>
+            </div>
+            <button class="btn" onclick="saveFeedback()">
+                <i class="fas fa-save icon"></i>Save Feedback
+            </button>
         </div>
     </div>
     
@@ -266,11 +472,18 @@
     <div class="popup" id="marketingPopup">
         <div class="popup-content">
             <div class="popup-header">
-                <h3 class="popup-title">Call Details</h3>
+                <h3 class="popup-title"><i class="fas fa-bullhorn icon"></i>Call Details</h3>
                 <button class="close-btn" onclick="closePopup('marketingPopup')">&times;</button>
             </div>
-            <textarea id="marketingDetails" rows="6" placeholder="Enter call details..."></textarea>
-            <button class="btn" onclick="saveMarketing()" style="margin-top: 15px;">Save</button>
+            <div class="form-group">
+                <label for="marketingDetails">Marketing call details</label>
+                <div class="input-container">
+                    <textarea id="marketingDetails" rows="6" placeholder="Enter call details..."></textarea>
+                </div>
+            </div>
+            <button class="btn" onclick="saveMarketing()">
+                <i class="fas fa-save icon"></i>Save Details
+            </button>
         </div>
     </div>
 
@@ -337,6 +550,16 @@
             closePopup('marketingPopup');
         }
         
+        // Close popup when clicking outside
+        window.addEventListener('click', function(e) {
+            const popups = document.querySelectorAll('.popup');
+            popups.forEach(popup => {
+                if (e.target === popup) {
+                    popup.style.display = 'none';
+                }
+            });
+        });
+        
         // Form submission
         document.getElementById('whatsappForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -353,7 +576,7 @@
             // Disable submit button
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting...';
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin icon"></i>Submitting...';
             
             // Prepare form data
             const formData = {
@@ -365,6 +588,7 @@
                 complaintDetails: document.getElementById('complaintDetails').value || '',
                 itemsEnquired: document.getElementById('itemsEnquired').value || '',
                 itemsBilled: document.getElementById('itemsBilled').value || '',
+                billValue: document.getElementById('billValue').value || '',
                 itemsNotAvailable: document.getElementById('itemsNotAvailable').value || '',
                 itemNames: document.getElementById('itemNames').value || '',
                 quantity: document.getElementById('quantity').value || '',
@@ -396,10 +620,15 @@
                 // Reset form
                 document.getElementById('whatsappForm').reset();
                 
+                // Set default date and time again
+                document.getElementById('date').valueAsDate = new Date();
+                document.getElementById('time').value = `${hours}:${minutes}`;
+                
                 // Reset popup fields
                 document.getElementById('complaintDetails').value = '';
                 document.getElementById('itemsEnquired').value = '';
                 document.getElementById('itemsBilled').value = '';
+                document.getElementById('billValue').value = '';
                 document.getElementById('itemsNotAvailable').value = '';
                 document.getElementById('itemNames').value = '';
                 document.getElementById('quantity').value = '';
@@ -409,7 +638,7 @@
                 // Re-enable submit button
                 const submitBtn = document.getElementById('submitBtn');
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Submit';
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane icon"></i>Submit Form';
                 
                 // Hide success message after 5 seconds
                 setTimeout(() => {
@@ -423,7 +652,7 @@
                 // Re-enable submit button
                 const submitBtn = document.getElementById('submitBtn');
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Submit';
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane icon"></i>Submit Form';
             });
         }
     </script>
