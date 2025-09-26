@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp TO Delivery</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #25D366;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #25D366;
+        }
+        
+        .error {
+            color: #ff3860;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .popup-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .popup-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .btn {
+            background-color: #25D366;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #128C7E;
+        }
+        
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .sub-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        @media (max-width: 600px) {
+            .sub-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WhatsApp TO Delivery</h1>
+        <form id="whatsappForm">
+            <div class="form-group">
+                <label for="customerName">Customer Name</label>
+                <input type="text" id="customerName" name="customerName" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="customerPhone">Customer Phone Number</label>
+                <input type="text" id="customerPhone" name="customerPhone" pattern="^91[6-9]\d{9}$" required>
+                <div class="error" id="phoneError">Please Add 91 Before Phone number</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="time">Time</label>
+                <input type="time" id="time" name="time" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="callReason">Customer Call Reason</label>
+                <select id="callReason" name="callReason" required>
+                    <option value="">Select a reason</option>
+                    <option value="Complaint">Complaint</option>
+                    <option value="Enquiery">Enquiery</option>
+                    <option value="FeedBack">FeedBack</option>
+                    <option value="Marketing Call">Marketing Call</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn" id="submitBtn">Submit</button>
+        </form>
+        
+        <div class="success-message" id="successMessage">
+            Form submitted successfully!
+        </div>
+    </div>
+    
+    <!-- Complaint Popup -->
+    <div class="popup" id="complaintPopup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3 class="popup-title">Please Describe Your Complaint Here</h3>
+                <button class="close-btn" onclick="closePopup('complaintPopup')">&times;</button>
+            </div>
+            <textarea id="complaintDetails" rows="6" placeholder="Enter complaint details..."></textarea>
+            <button class="btn" onclick="saveComplaint()" style="margin-top: 15px;">Save</button>
+        </div>
+    </div>
+    
+    <!-- Enquiery Popup -->
+    <div class="popup" id="enquieryPopup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3 class="popup-title">Enquiery Details</h3>
+                <button class="close-btn" onclick="closePopup('enquieryPopup')">&times;</button>
+            </div>
+            <div class="sub-options">
+                <div class="form-group">
+                    <label for="itemsEnquired">Number of Item Enquiries</label>
+                    <input type="text" id="itemsEnquired" name="itemsEnquired">
+                </div>
+                <div class="form-group">
+                    <label for="itemsBilled">Number of items billed</label>
+                    <input type="text" id="itemsBilled" name="itemsBilled">
+                </div>
+                <div class="form-group">
+                    <label for="itemsNotAvailable">Number of items Not Available</label>
+                    <input type="text" id="itemsNotAvailable" name="itemsNotAvailable">
+                </div>
+                <div class="form-group">
+                    <label for="itemNames">Items Name</label>
+                    <input type="text" id="itemNames" name="itemNames">
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Quantity</label>
+                    <input type="text" id="quantity" name="quantity">
+                </div>
+            </div>
+            <button class="btn" onclick="saveEnquiery()" style="margin-top: 15px;">Save</button>
+        </div>
+    </div>
+    
+    <!-- Feedback Popup -->
+    <div class="popup" id="feedbackPopup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3 class="popup-title">FeedBack Details</h3>
+                <button class="close-btn" onclick="closePopup('feedbackPopup')">&times;</button>
+            </div>
+            <textarea id="feedbackDetails" rows="6" placeholder="Enter feedback details..."></textarea>
+            <button class="btn" onclick="saveFeedback()" style="margin-top: 15px;">Save</button>
+        </div>
+    </div>
+    
+    <!-- Marketing Call Popup -->
+    <div class="popup" id="marketingPopup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h3 class="popup-title">Call Details</h3>
+                <button class="close-btn" onclick="closePopup('marketingPopup')">&times;</button>
+            </div>
+            <textarea id="marketingDetails" rows="6" placeholder="Enter call details..."></textarea>
+            <button class="btn" onclick="saveMarketing()" style="margin-top: 15px;">Save</button>
+        </div>
+    </div>
+
+    <script>
+        // Set today's date as default
+        document.getElementById('date').valueAsDate = new Date();
+        
+        // Set current time as default
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        document.getElementById('time').value = `${hours}:${minutes}`;
+        
+        // Phone number validation
+        document.getElementById('customerPhone').addEventListener('input', function() {
+            const phoneError = document.getElementById('phoneError');
+            const phonePattern = /^91[6-9]\d{9}$/;
+            
+            if (!phonePattern.test(this.value)) {
+                phoneError.style.display = 'block';
+            } else {
+                phoneError.style.display = 'none';
+            }
+        });
+        
+        // Call reason change handler
+        document.getElementById('callReason').addEventListener('change', function() {
+            const reason = this.value;
+            
+            if (reason === 'Complaint') {
+                openPopup('complaintPopup');
+            } else if (reason === 'Enquiery') {
+                openPopup('enquieryPopup');
+            } else if (reason === 'FeedBack') {
+                openPopup('feedbackPopup');
+            } else if (reason === 'Marketing Call') {
+                openPopup('marketingPopup');
+            }
+        });
+        
+        // Popup functions
+        function openPopup(popupId) {
+            document.getElementById(popupId).style.display = 'flex';
+        }
+        
+        function closePopup(popupId) {
+            document.getElementById(popupId).style.display = 'none';
+        }
+        
+        // Save functions for each popup
+        function saveComplaint() {
+            closePopup('complaintPopup');
+        }
+        
+        function saveEnquiery() {
+            closePopup('enquieryPopup');
+        }
+        
+        function saveFeedback() {
+            closePopup('feedbackPopup');
+        }
+        
+        function saveMarketing() {
+            closePopup('marketingPopup');
+        }
+        
+        // Form submission
+        document.getElementById('whatsappForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate phone number
+            const phonePattern = /^91[6-9]\d{9}$/;
+            const phoneValue = document.getElementById('customerPhone').value;
+            
+            if (!phonePattern.test(phoneValue)) {
+                document.getElementById('phoneError').style.display = 'block';
+                return;
+            }
+            
+            // Disable submit button
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            
+            // Prepare form data
+            const formData = {
+                customerName: document.getElementById('customerName').value,
+                customerPhone: document.getElementById('customerPhone').value,
+                date: document.getElementById('date').value,
+                time: document.getElementById('time').value,
+                callReason: document.getElementById('callReason').value,
+                complaintDetails: document.getElementById('complaintDetails').value || '',
+                itemsEnquired: document.getElementById('itemsEnquired').value || '',
+                itemsBilled: document.getElementById('itemsBilled').value || '',
+                itemsNotAvailable: document.getElementById('itemsNotAvailable').value || '',
+                itemNames: document.getElementById('itemNames').value || '',
+                quantity: document.getElementById('quantity').value || '',
+                feedbackDetails: document.getElementById('feedbackDetails').value || '',
+                marketingDetails: document.getElementById('marketingDetails').value || ''
+            };
+            
+            // Submit to Google Sheets
+            submitToGoogleSheets(formData);
+        });
+        
+        function submitToGoogleSheets(formData) {
+            // Google Apps Script Web App URL (you need to create this)
+            // Replace with your actual Web App URL
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbwmZ-MSiRuN20NM5SQ1RB8-B-VBn9XfExFI7V_LYo1HOdt2TYB3O90LtuTnkvKSmqaQgA/exec';
+            
+            // Create a query string from the form data
+            const queryParams = new URLSearchParams(formData).toString();
+            
+            // Use GET method to submit data
+            fetch(`${scriptURL}?${queryParams}`, {
+                method: 'GET',
+                mode: 'no-cors' // Important for cross-origin requests
+            })
+            .then(() => {
+                // Show success message
+                document.getElementById('successMessage').style.display = 'block';
+                
+                // Reset form
+                document.getElementById('whatsappForm').reset();
+                
+                // Reset popup fields
+                document.getElementById('complaintDetails').value = '';
+                document.getElementById('itemsEnquired').value = '';
+                document.getElementById('itemsBilled').value = '';
+                document.getElementById('itemsNotAvailable').value = '';
+                document.getElementById('itemNames').value = '';
+                document.getElementById('quantity').value = '';
+                document.getElementById('feedbackDetails').value = '';
+                document.getElementById('marketingDetails').value = '';
+                
+                // Re-enable submit button
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit';
+                
+                // Hide success message after 5 seconds
+                setTimeout(() => {
+                    document.getElementById('successMessage').style.display = 'none';
+                }, 5000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('There was an error submitting the form. Please try again.');
+                
+                // Re-enable submit button
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit';
+            });
+        }
+    </script>
+</body>
+</html>
